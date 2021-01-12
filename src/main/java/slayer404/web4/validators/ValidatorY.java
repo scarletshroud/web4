@@ -1,27 +1,23 @@
 package slayer404.web4.validators;
 
+import slayer404.web4.exceptions.ValidationException;
+
 public class ValidatorY extends Validator{
 
     @Override
-    public boolean validate(String value, StringBuilder message) {
+    public void validate(String value) throws ValidationException {
 
-        if (isEmpty(value, "Y", message)) {
-            return false;
-        }
+        isEmpty(value, "Y");
 
         try {
             double val = handleValue(value);
 
             if (!(val > -5 && val < 5)) {
-                message.append("Value Y out of range.\n");
-                return false;
+                throw new ValidationException("Value Y out of range.\n");
             }
         } catch (NumberFormatException e) {
-            message.append("Value  Y  is incorrect.\n");
-            return false;
+            throw new ValidationException("Value  Y  is incorrect.\n");
         }
-
-        return true;
 
     }
 }

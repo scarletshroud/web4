@@ -1,29 +1,30 @@
 package slayer404.web4.validators;
 
+import slayer404.web4.exceptions.ValidationException;
+
 public class ValidatorX extends Validator {
 
     @Override
-    public boolean validate(String value, StringBuilder message) {
+    public void validate(String value) throws ValidationException {
 
-        if (isEmpty(value, "X", message)) {
-            return false;
-        }
+        isEmpty(value, "X");
 
         try {
-            Integer val = Integer.parseInt(value);
+            int val = Integer.parseInt(value);
 
+            boolean f = false;
             for (int i = -5; i <= 5; i++) {
                 if (val == i) {
-                    return true;
+                    f = true;
                 }
             }
 
-            message.append("Value X is incorrect.\n");
-            return false;
+            if(!f) {
+                throw new ValidationException("Value X is incorrect.\n");
+            }
 
         } catch (NumberFormatException e) {
-            message.append("Value  X  is incorrect.\n");
-            return false;
+            throw new ValidationException("Value  X  is incorrect.\n");
         }
     }
 }
