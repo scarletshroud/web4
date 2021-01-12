@@ -5,7 +5,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import slayer404.web4.exceptions.UserExistsException;
 import slayer404.web4.model.User;
 import slayer404.web4.repository.UserRepository;
 
@@ -13,8 +12,12 @@ import java.util.Map;
 
 @Controller
 public class RegistrationController {
+    private final UserRepository userRepo;
+
     @Autowired
-    private UserRepository userRepo;
+    public RegistrationController(UserRepository userRepo) {
+        this.userRepo = userRepo;
+    }
 
     @GetMapping("/registration")
     public String getRegistrationPage() {
@@ -22,7 +25,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public String registration(User user, Map<String, Object> model) throws UserExistsException {
+    public String registration(User user, Map<String, Object> model) {
 
         if (userRepo.findByUsername(user.getUsername()) != null) {
             model.put("message", "User exists!");
