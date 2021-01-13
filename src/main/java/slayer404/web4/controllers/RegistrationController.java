@@ -1,16 +1,19 @@
 package slayer404.web4.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 import slayer404.web4.model.User;
 import slayer404.web4.repository.UserRepository;
 
 import java.util.Map;
 
-@Controller
+@RestController
 public class RegistrationController {
     private final UserRepository userRepo;
 
@@ -21,21 +24,20 @@ public class RegistrationController {
 
     @GetMapping("/registration")
     public String getRegistrationPage() {
-        return "registration";
+        return "index";
     }
 
     @PostMapping("/registration")
-    public String registration(User user, Map<String, Object> model) {
+    public ResponseEntity<String> registration(User user) {
 
         if (userRepo.findByUsername(user.getUsername()) != null) {
-            model.put("message", "User exists!");
-            return "registration";
+            return new ResponseEntity<>("User exists!", HttpStatus.CONFLICT);
         }
 
         user.setPassword(new BCryptPasswordEncoder(12).encode(user.getPassword()));
         userRepo.save(user);
 
-        return "redirect:/auth/login";
+        return new ResponseEntity<>("Registration completed successfully!", HttpStatus.CREATED);
     }
 
 }

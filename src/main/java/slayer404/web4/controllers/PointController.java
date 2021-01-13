@@ -1,9 +1,11 @@
 package slayer404.web4.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import slayer404.web4.exceptions.ValidationException;
 import slayer404.web4.model.Point;
@@ -17,9 +19,9 @@ import slayer404.web4.validators.ValidatorY;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
+import java.util.List;
 
-@Controller
+@RestController
 public class PointController {
     private final ResultRepository resultRepo;
 
@@ -30,13 +32,41 @@ public class PointController {
 
     @GetMapping("/main")
     private String getMainPage() {
-        return "main";
+        return "index";
     }
 
     @PostMapping("/handle")
-    private String handleRequest(Point point, Map<String, Object> model) {
+    private ResponseEntity<?> handleRequest(Point point) {
         long startTime = System.currentTimeMillis();
         StringBuilder errorMessage = new StringBuilder();
+
+        if (!isRequestDataValid(point, errorMessage)) {
+            return new ResponseEntity<>(errorMessage.toString(), HttpStatus.BAD_REQUEST);
+        }
+
+        String answer =
+                HitChecker.isInArea(
+                        point.getValueX(), point.getValueY(), point.getValueR()
+                ) ? "In Area" : "Out Of Area";
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+        Result result = new Result(
+                Double.parseDouble(DataFormatter.formatValue(point.getValueX())),
+                Double.parseDouble(DataFormatter.formatValue(point.getValueY())),
+                Integer.parseInt(point.getValueR()),
+                answer,
+                formatter.format(LocalDateTime.now()),
+                startTime - System.currentTimeMillis()
+        );
+
+        resultRepo.save(result);
+        List<Result> results = resultRepo.getAllByUsername();
+
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+
+    private boolean isRequestDataValid(Point point, StringBuilder errorMessage) {
         boolean err = false;
 
         try {
@@ -60,29 +90,6 @@ public class PointController {
             err = true;
         }
 
-        if (err) {
-            model.put("errorMessage", errorMessage);
-            return "redirect:/main";
-        }
-
-        String answer =
-                HitChecker.isInArea(
-                        point.getValueX(), point.getValueY(), point.getValueR()
-                ) ? "In Area" : "Out Of Area";
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-
-        Result result = new Result(
-                Double.parseDouble(DataFormatter.formatValue(point.getValueX())),
-                Double.parseDouble(DataFormatter.formatValue(point.getValueY())),
-                Integer.parseInt(point.getValueR()),
-                answer,
-                formatter.format(LocalDateTime.now()),
-                startTime - System.currentTimeMillis()
-        );
-
-        resultRepo.save(result);
-
-        return "main";
+        return err;
     }
 }

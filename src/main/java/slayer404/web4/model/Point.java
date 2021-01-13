@@ -9,4 +9,5 @@ public class Point {
     private String valueX;
     private String valueY;
     private String valueR;
+    private String owner;
 }
