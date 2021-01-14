@@ -3,7 +3,6 @@ package slayer404.web4.utils;
 public class HitChecker {
     public static boolean isInArea(String firstVal, String secondVal, String thirdVal) {
         try {
-
             double x = Double.parseDouble(firstVal);
             double y = Double.parseDouble(secondVal);
             int r = Integer.parseInt(thirdVal);

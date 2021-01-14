@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import slayer404.web4.model.User;
 import slayer404.web4.repository.UserRepository;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 public class RegistrationController {
     private final UserRepository userRepo;
@@ -20,22 +23,20 @@ public class RegistrationController {
         this.userRepo = userRepo;
     }
 
-    @GetMapping("/registration")
-    public String getRegistrationPage() {
-        return "index";
-    }
-
     @PostMapping("/registration")
-    public ResponseEntity<String> registration(User user) {
-
+    public ResponseEntity<?> registration(User user) {
+        Map<String, Object> answer = new HashMap<>();
         if (userRepo.findByUsername(user.getUsername()) != null) {
-            return new ResponseEntity<>("User exists!", HttpStatus.CONFLICT);
+            answer.put("success", false);
+            answer.put("message", "User already exists");
+            return new ResponseEntity<>(answer, HttpStatus.CONFLICT);
         }
 
         user.setPassword(new BCryptPasswordEncoder(12).encode(user.getPassword()));
         userRepo.save(user);
 
-        return new ResponseEntity<>("Registration completed successfully!", HttpStatus.CREATED);
+        answer.put("success", true);
+        answer.put("message", "Registration successful");
+        return new ResponseEntity<>(answer, HttpStatus.CREATED);
     }
-
 }

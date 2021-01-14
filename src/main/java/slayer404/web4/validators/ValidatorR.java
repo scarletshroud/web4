@@ -9,17 +9,21 @@ public class ValidatorR extends Validator {
 
         isEmpty(value, "R");
 
-
         try {
             int val = Integer.parseInt(value);
 
+            boolean f = false;
             for (int i = -5; i <= 5; i++) {
                 if (val == i) {
-
+                    f = true;
                 }
             }
 
-            throw new ValidationException("Value X is incorrect.\n");
+            if(!f) {
+                throw new ValidationException("Value R is incorrect.\n");
+            }
+
+            throw new ValidationException("Value R is incorrect.\n");
 
         } catch (NumberFormatException e) {
             throw new ValidationException("Value  R  is incorrect.\n");

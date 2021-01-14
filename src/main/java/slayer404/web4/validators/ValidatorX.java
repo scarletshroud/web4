@@ -10,7 +10,7 @@ public class ValidatorX extends Validator {
         isEmpty(value, "X");
 
         try {
-            int val = Integer.parseInt(value);
+            double val = Double.parseDouble(value);
 
             boolean f = false;
             for (int i = -5; i <= 5; i++) {
@@ -20,7 +20,7 @@ public class ValidatorX extends Validator {
             }
 
             if(!f) {
-                throw new ValidationException("Value X is incorrect.\n");
+                throw new ValidationException("Value R is incorrect.\n");
             }
 
         } catch (NumberFormatException e) {

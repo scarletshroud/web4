@@ -44,10 +44,10 @@ public class PointController {
             return new ResponseEntity<>(errorMessage.toString(), HttpStatus.BAD_REQUEST);
         }
 
-        String answer =
+        boolean answer =
                 HitChecker.isInArea(
                         point.getValueX(), point.getValueY(), point.getValueR()
-                ) ? "In Area" : "Out Of Area";
+                );
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
@@ -57,11 +57,12 @@ public class PointController {
                 Integer.parseInt(point.getValueR()),
                 answer,
                 formatter.format(LocalDateTime.now()),
-                startTime - System.currentTimeMillis()
+                System.currentTimeMillis() - startTime,
+                point.getUserId()
         );
 
         resultRepo.save(result);
-        List<Result> results = resultRepo.getAllByUsername();
+        List<Result> results = resultRepo.getAllByUserId(point.getUserId());
 
         return new ResponseEntity<>(results, HttpStatus.OK);
     }

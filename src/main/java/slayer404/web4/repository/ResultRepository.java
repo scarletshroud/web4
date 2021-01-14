@@ -6,6 +6,5 @@ import slayer404.web4.model.Result;
 import java.util.List;
 
 public interface ResultRepository extends JpaRepository<Result, Long> {
-    List<Result> getAllByUsername();
-
+    List<Result> getAllByUserId(long id);
 }
