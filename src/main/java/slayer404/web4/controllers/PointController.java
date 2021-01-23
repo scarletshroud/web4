@@ -3,9 +3,7 @@ package slayer404.web4.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import slayer404.web4.exceptions.ValidationException;
 import slayer404.web4.model.Point;
@@ -22,6 +20,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
+@RequestMapping("api")
+@CrossOrigin(origins = "http://localhost:4200")
 public class PointController {
     private final ResultRepository resultRepo;
 
@@ -30,13 +30,8 @@ public class PointController {
         this.resultRepo = resultRepo;
     }
 
-    @GetMapping("/main")
-    private String getMainPage() {
-        return "index";
-    }
-
-    @PostMapping("/handle")
-    private ResponseEntity<?> handleRequest(Point point) {
+    @PostMapping("/handler")
+    private ResponseEntity<?> handleRequest(@RequestBody Point point) {
         long startTime = System.currentTimeMillis();
         StringBuilder errorMessage = new StringBuilder();
 
@@ -62,8 +57,12 @@ public class PointController {
         );
 
         resultRepo.save(result);
-        List<Result> results = resultRepo.getAllByUserId(point.getUserId());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
+    @GetMapping("/resource")
+    private ResponseEntity<?> getResults() {
+        List<Result> results = resultRepo.getAllByUserId(1);
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
