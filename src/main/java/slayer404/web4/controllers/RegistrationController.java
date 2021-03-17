@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("api")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class RegistrationController {
     private final UserRepository userRepo;
 

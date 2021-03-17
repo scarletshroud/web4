@@ -4,7 +4,7 @@ import slayer404.web4.exceptions.ValidationException;
 
 public abstract class Validator {
 
-    public abstract void validate(String value) throws ValidationException;
+    public abstract void validate(String value, String name) throws ValidationException;
 
     public void isEmpty(String value, String name) throws ValidationException {
         if (value == null || value.equals("")) {
@@ -22,4 +22,5 @@ public abstract class Validator {
         }
         return val;
     }
+
 }

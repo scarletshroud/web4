@@ -36,7 +36,7 @@ public class Result {
     public Result() { }
 
     public Result(double valueX, double valueY, int valueR,
-                  boolean answer, String time, long workTime, long userId ) {
+                  boolean answer, String time, long workTime, long userId) {
         this.valueX = valueX;
         this.valueY = valueY;
         this.valueR = valueR;
